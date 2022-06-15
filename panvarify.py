@@ -2,6 +2,7 @@
 from cmath import log
 from xml import dom
 from xml.dom.minidom import Document
+from numpy import var
 import selenium
 from selenium.webdriver import Chrome,ChromeOptions
 from time import sleep
@@ -35,7 +36,7 @@ def login():
 	pickle.dump(driver.get_cookies(),open("cookies.pkl","wb"))
 
 for file in os.listdir():
-	if(file[::-1].split(".")[0][::-1]=="xlsx"):
+	if(file.split(".")[-1]=="xlsx"):
 		xlsxFile = os.getcwd() + "\\" +file
 
 driver.get(baseUrl)
@@ -75,9 +76,10 @@ def updateExcel(field):
 write_sheet.cell(row=1,column=12,value="1")
 for idx,row in enumerate(read_sheet.iter_rows(),1):
 	pan_no = row[4].value
-	name = row[6].value
+	name = row[5].value
+	print(name)
 	verified = bool(row[9].value)
-	if(verified or not pan_no or len(pan_no)<8):
+	if(verified):
 		continue
 
 	panInput = driver.find_element(By.XPATH,'//*[@id="pannumber"]')
@@ -94,7 +96,6 @@ for idx,row in enumerate(read_sheet.iter_rows(),1):
 	try:
 		wait  = WebDriverWait(driver,2).until(EC.visibility_of_all_elements_located((By.XPATH,'//*[@id="name"]')))
 		web_name = driver.find_element(By.XPATH,'//*[@id="name"]').text
-
 	except selenium.common.exceptions.TimeoutException:
 		fields["invalid"] = "true"
 		updateExcel(fields)
