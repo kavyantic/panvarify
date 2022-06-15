@@ -87,6 +87,11 @@ for idx,row in enumerate(read_sheet.iter_rows(),1):
 	goButton = driver.find_element(By.XPATH,'//*[@id="clickGo1"]')
 	fields = {"row":idx,"name":"","match":"false","mismatch":"false","invalid":"false"}
 
+	if(not pan_no):
+		fields["invalid"] = "true"
+		updateExcel(fields)
+		continue
+
 
 	
 	panInput.clear()
